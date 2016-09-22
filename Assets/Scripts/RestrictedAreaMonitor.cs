@@ -31,7 +31,8 @@ public class RestrictedAreaMonitor : MonoBehaviour {
 	/// LEFT A RESTRICTED AREA.  THIS LOGIC IS CONTAINED ENTIRELY WITHIN THE GAME MANAGER ANDROID LIBRARY.
 	/// </summary>
 	class MaterialSwapper : AndroidJavaProxy {
-		private Renderer targetRenderer;
+		private MeshRenderer targetRenderer;
+		private Material blueMaterial, redMaterial;
 		private AndroidJavaObject toastDebugger;
 
 		/// <summary>
@@ -41,7 +42,10 @@ public class RestrictedAreaMonitor : MonoBehaviour {
 		/// <param name="target">Target for which to update the rendered material</param>
 		public MaterialSwapper(GameObject target) 
 			: base("edu.temple.gamemanager.LocationUpdateListener") {
-			targetRenderer = target.GetComponent<Renderer>();
+			targetRenderer = target.GetComponent<MeshRenderer>();
+			blueMaterial = Resources.Load("Blue") as Material;
+			redMaterial = Resources.Load("Red") as Material;
+
 			toastDebugger = new AndroidJavaObject("edu.temple.gamemanager.ToastDebugger");
 			SetActivityInNativePlugin();
 		}
@@ -52,7 +56,7 @@ public class RestrictedAreaMonitor : MonoBehaviour {
 		/// </summary>
 		public void onRestrictedAreaEntered() {
 			ShowMessage("Entered a restricted area!");
-			targetRenderer.material = targetRenderer.materials [1];
+			targetRenderer.material = redMaterial;
 		}
 
 		/// <summary>
@@ -61,7 +65,7 @@ public class RestrictedAreaMonitor : MonoBehaviour {
 		/// </summary>
 		public void onRestrictedAreaLeft() {
 			ShowMessage("Left a restricted area!");
-			targetRenderer.material = targetRenderer.materials [0];
+			targetRenderer.material = blueMaterial;
 		}
 
 		/// <summary>
